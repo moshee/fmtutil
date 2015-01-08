@@ -12,8 +12,6 @@ const (
 	T
 	P
 	E
-	Z
-	Y
 )
 
 func (x SI) String() string {
@@ -24,28 +22,22 @@ func (x SI) String() string {
 		return strconv.FormatUint(uint64(x), 10)
 	case x < M:
 		s = "k"
-		n = float64(x) / KB
+		n = float64(x) / K
 	case x < G:
 		s = "M"
-		n = float64(x) / MB
+		n = float64(x) / M
 	case x < T:
 		s = "G"
-		n = float64(x) / GB
+		n = float64(x) / G
 	case x < P:
 		s = "T"
-		n = float64(x) / GB
+		n = float64(x) / T
 	case x < E:
 		s = "P"
-		n = float64(x) / GB
-	case x < Z:
-		s = "E"
-		n = float64(x) / GB
-	case x < Y:
-		s = "Z"
-		n = float64(x) / GB
+		n = float64(x) / P
 	default:
-		s = "Y"
-		n = float64(x) / TB
+		s = "E"
+		n = float64(x) / E
 	}
 
 	return strconv.FormatFloat(Round(n, 1), 'f', -1, 64) + s
