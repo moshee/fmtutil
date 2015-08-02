@@ -46,7 +46,7 @@ func (x SI) String() string {
 		n = float64(x) / E
 	}
 
-	return strconv.FormatFloat(Round(n, 1), 'f', -1, 64) + s
+	return strconv.FormatFloat(ToPrec(n, 1), 'f', -1, 64) + s
 }
 
 type SIUnit struct {
@@ -58,8 +58,8 @@ func (x SIUnit) String() string {
 	return SI(x.N).String() + x.U
 }
 
-// Round rounds a number to the given number of total digits.
-func Round(n float64, prec int) float64 {
+// ToPrec rounds a number to the given number of total digits.
+func ToPrec(n float64, prec int) float64 {
 	n *= float64(prec) * 10
 	x := float64(int64(n + 0.5))
 	return x / (float64(prec) * 10)
@@ -108,4 +108,26 @@ func LongDuration(n time.Duration) string {
 	default:
 		return p(n/Year, "y")
 	}
+}
+
+// HMS formats a duration as a colon-separated timestamp.
+//
+// If n is less than 60 seconds, the format will be 0:ss.
+// If n is less than 60 minutes, the format will be m:ss.
+// Otherwise, the format will be h:mm:ss.
+func HMS(n time.Duration) string {
+	if n < time.Second {
+		return "0:00"
+	}
+	t := n / time.Second
+	sec := t % 60
+	if t < 60 {
+		return fmt.Sprintf("0:%02d", sec)
+	}
+	t /= 60
+	min := t % 60
+	if t < 60 {
+		return fmt.Sprintf("%d:%02d", min, sec)
+	}
+	return fmt.Sprintf("%d:%02d:%02d", t/60, min, sec)
 }
