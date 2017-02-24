@@ -35,3 +35,43 @@ func TestHMS(t *testing.T) {
 		}
 	}
 }
+
+func TestFormatRoman(t *testing.T) {
+	romanTest := []struct {
+		n int
+		s string
+	}{
+		{1, "I"},
+		{2, "II"},
+		{3, "III"},
+		{4, "IV"},
+		{5, "V"},
+		{6, "VI"},
+		{7, "VII"},
+		{8, "VIII"},
+		{9, "IX"},
+		{10, "X"},
+		{12, "XII"},
+		{123, "CXXIII"},
+		{1234, "MCCXXXIV"},
+		{403, "CDIII"},
+		{1823, "MDCCCXXIII"},
+		{983, "CMLXXXIII"},
+		{391, "CCCXCI"},
+		{882, "DCCCLXXXII"},
+		{533, "DXXXIII"},
+		{24, "XXIV"},
+		{95, "XCV"},
+		{38, "XXXVIII"},
+		{50, "L"},
+		{51, "LI"},
+		{69, "LXIX"},
+	}
+
+	for _, test := range romanTest {
+		res := FormatRoman(test.n)
+		if res != test.s {
+			t.Errorf("FormatRoman(%d): want %q, got %q", test.n, test.s, res)
+		}
+	}
+}

@@ -5,6 +5,7 @@ package fmtutil
 import (
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -130,4 +131,52 @@ func HMS(n time.Duration) string {
 		return fmt.Sprintf("%d:%02d", min, sec)
 	}
 	return fmt.Sprintf("%d:%02d:%02d", t/60, min, sec)
+}
+
+var romanNumerals = [][]string{
+	{"I", "V", "X"},
+	{"X", "L", "C"},
+	{"C", "D", "M"},
+}
+
+// FormatRoman formats an integer as Roman numerals. It panics if n < 1, much
+// like a Roman would when confronted with the concept of zero or negative
+// numbers.
+func FormatRoman(n int) string {
+	if n < 1 {
+		panic("Roman calligrapher unable to comprehend concept of zero or negative numbers")
+	}
+
+	var (
+		i int
+		s string
+	)
+
+	for _, c := range romanNumerals {
+		i = n
+		n /= 10
+		i -= n * 10
+		s = formatRomanDigit(i, c[0], c[1], c[2]) + s
+
+		if n == 0 {
+			return s
+		}
+	}
+
+	return strings.Repeat("M", n) + s
+}
+
+// formatRomanDigit formats a single digit in the order of magnitude identified
+// by the given one, five, and ten numerals.
+func formatRomanDigit(n int, one, five, ten string) string {
+	switch {
+	case n < 4:
+		return strings.Repeat(one, n)
+	case n == 4:
+		return one + five
+	case n < 9:
+		return five + strings.Repeat(one, n-5)
+	default:
+		return one + ten
+	}
 }
